@@ -1,14 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./Project";
 
 @Entity()
-export class User {
+export class Client {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
   name: string;
   @Column()
   email: string;
-  @ManyToMany(() => Project, (project) => project.team)
+  @OneToMany(() => Project, (project) => project.id)
   projects: Project[];
 }

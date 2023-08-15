@@ -1,20 +1,33 @@
-import { AppDataSource } from "./data-source"
-import { User } from "./entity/User"
+import { AppDataSource } from "./database";
+import { Client } from "./entity/Client";
+import { Project } from "./entity/Project";
+import { User } from "./entity/User";
 
-AppDataSource.initialize().then(async () => {
+AppDataSource.initialize()
+  .then(async () => {
+    const project = new Project();
+    project.name = "project1";
+    project.desc = "test desc";
 
-    console.log("Inserting a new user into the database...")
-    const user = new User()
-    user.firstName = "Timber"
-    user.lastName = "Saw"
-    user.age = 25
-    await AppDataSource.manager.save(user)
-    console.log("Saved a new user with id: " + user.id)
+    console.log("Inserting a new user into the database...");
+    const user = new User();
+    user.name = "Team 1";
+    user.email = "team1@team.com";
+    user.projects = [project];
 
-    console.log("Loading users from the database...")
-    const users = await AppDataSource.manager.find(User)
-    console.log("Loaded users: ", users)
+    project.team = [user];
+    await AppDataSource.manager.save(user);
+    await AppDataSource.manager.save(project);
 
-    console.log("Here you can setup and run express / fastify / any other framework.")
+    console.log("Saved a new user with id: " + user.id);
 
-}).catch(error => console.log(error))
+    const client = new Client();
+    client.name = "clint 1";
+    client.projects = [project];
+    client.email = "client@email.com";
+
+    project.client = client;
+
+    await AppDataSource.manager.save(client);
+  })
+  .catch((error) => console.log(error));
